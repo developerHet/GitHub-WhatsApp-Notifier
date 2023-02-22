@@ -5,6 +5,8 @@ const Nexmo = require('nexmo');
 
 
 const app = express();
+app.use(bodyParser.json())
+
 dotenv.config();
 const port = process.env.PORT || 3000;
 
@@ -15,7 +17,7 @@ const nexmo = new Nexmo({
 });
 
 // Set up a webhook endpoint to receive GitHub push notifications
-app.post('/webhook', bodyParser.json(), (req, res) => {
+app.post('/webhook', (req, res) => {
   const payload = req.body;
   const repoName = payload.repository.name;
   const branchName = payload.ref.replace('refs/heads/', '');
