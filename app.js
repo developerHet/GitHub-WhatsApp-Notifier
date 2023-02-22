@@ -15,8 +15,6 @@ app.use(bodyParser.urlencoded({
 const port = process.env.PORT || 3000;
 
 // Set up Nexmo/Vonage API credentials
-
-
 const vonage = new Vonage({
   apiKey: process.env.VONAGE_API_KEY,
   apiSecret: process.env.VONAGE_API_SECRET,
@@ -52,12 +50,13 @@ app.post('/webhook', (req, res) => {
 });
 
 
-
+// set inbound-message
 app.post('/webhooks/inbound-message', (req, res) => {
   console.log(req.body);
   res.status(200).end();
 });
 
+// set /message-status
 app.post('/webhooks/message-status', (req, res) => {
   console.log(req.body);
   res.status(200).end();
