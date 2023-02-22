@@ -18,7 +18,7 @@ const vonage = new Vonage({
   apiKey: process.env.VONAGE_API_KEY,
   apiSecret: process.env.VONAGE_API_SECRET,
   applicationId: process.env.VONAGE_APPLICATION_ID,
-  privateKey: process.env.VONAGE_PRIVATE_KEY 
+    privateKey: __dirname +"/private.key"
 }, 
 //{
   //apiHost: process.env.CYCLIC_URL
@@ -38,15 +38,21 @@ app.post('/webhook', (req, res) => {
   const message = `New commit in ${repoName}/${branchName}: ${commitMsg}`;
   
   // Use Nexmo/Vonage  to send the message via WhatsApp
-  vonage.messages.send(
-    new Text(
-      message,
-      process.env.TO_NUMBER,
-      process.env.WHATSAPP_NUMBER
-    )
-  )
-  .then(resp => console.log(resp.message_uuid))
-  .catch(err => console.error(err));
+  vonage.channel.send(
+    {type:'whatsapp',number: process.env.TO_NUMBER},
+    {type:'whatsapp',number: process.env.WHATSAPP_NUMBER},
+    {
+      content: {
+        type: 'text',
+        text: message
+      }},(err) => {
+        if(err) {
+          console.log(err);
+        } else {
+          console.log(data);
+        }
+      }
+  );
   
   res.status(200).send('OK');
 });
