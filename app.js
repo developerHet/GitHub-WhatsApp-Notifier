@@ -19,14 +19,16 @@ const vonage = new Vonage({
   apiSecret: process.env.VONAGE_API_SECRET,
   applicationId: process.env.VONAGE_APPLICATION_ID,
     privateKey: __dirname +"/private.key"
-}, {
-  apiHost: process.env.CYCLIC_URL
-})
+}, 
+//{
+  //apiHost: process.env.CYCLIC_URL
+//}
+)
 
 
 
 // Set up a webhook endpoint to receive GitHub push notifications
-app.post('/webhook', (req, res) => {
+app.post('/', (req, res) => {
   const payload = req.body;
   const repoName = payload.repository.name;
   const branchName = payload.ref.replace('refs/heads/', '');
