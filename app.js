@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const Nexmo = require('nexmo');
+const { Vonage } = require('@vonage/server-sdk')
+const { Text } = require('@vonage/messages/dist/classes/WhatsApp/Text');
 
 
 const app = express();
@@ -11,10 +12,18 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 
 // Set up Nexmo/Vonage API credentials
-const nexmo = new Nexmo({
-  apiKey: process.env.NEXMO_API_KEY,
-  apiSecret: process.env.NEXMO_API_SECRET,
-});
+
+
+const vonage = new Vonage({
+  apiKey: process.env.VONAGE_API_KEY,
+  apiSecret: process.env.VONAGE_API_SECRET,
+  applicationId: process.env.VONAGE_APPLICATION_ID,
+    privateKey: __dirname +"/private.key"
+}, {
+  apiHost: process.env.CYCLIC_URL
+})
+
+
 
 // Set up a webhook endpoint to receive GitHub push notifications
 app.post('/webhook', (req, res) => {
@@ -27,23 +36,15 @@ app.post('/webhook', (req, res) => {
   const message = `New commit in ${repoName}/${branchName}: ${commitMsg}`;
   
   // Use Nexmo/Vonage  to send the message via WhatsApp
-  nexmo.channel.send(
-    { type: 'whatsapp', number: process.env.YOUR_WHATSAPP_NUMBER },
-    { type: 'whatsapp', number: process.env.WHATSAPP_NUMBER_TO_SEND_TO},
-    {
-      content: {
-        type: 'text',
-        text: message
-      }
-    },
-    (err, data) => {
-      if (err) {
-        console.error(`Error sending Nexmo message: ${err}`);
-      } else {
-        console.log(`Nexmo message sent: ${data.message_uuid}`);
-      }
-    }
-  );
+  vonage.messages.send(
+    new Text(
+      "Temp",
+      process.env.TO_NUMBER,
+      process.env.WHATSAPP_NUMBER
+    )
+  )
+    .then(resp => console.log(resp.message_uuid))
+    .catch(err => console.error(err));
   
   res.status(200).send('OK');
 });
