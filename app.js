@@ -38,7 +38,7 @@ app.post('/webhook', (req, res) => {
   // Use Nexmo/Vonage  to send the message via WhatsApp
   vonage.messages.send(
     new Text(
-      "Temp",
+      message,
       process.env.TO_NUMBER,
       process.env.WHATSAPP_NUMBER
     )
