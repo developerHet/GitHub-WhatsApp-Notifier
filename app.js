@@ -29,18 +29,18 @@ const vonage = new Vonage({
 
 // Set up a webhook endpoint to receive GitHub push notifications
 app.post('/webhook', (req, res) => {
-  // const payload = req.body;
-  // const repoName = payload.repository.name;
-  // const branchName = payload.ref.replace('refs/heads/', '');
-  // const commitMsg = payload.head_commit.message;
+  const payload = req.body;
+  const repoName = payload.repository.name;
+  const branchName = payload.ref.replace('refs/heads/', '');
+  const commitMsg = payload.head_commit.message;
   
-  // Compose a message to send via WhatsApp
-  //const message = `New commit in ${repoName}/${branchName}: ${commitMsg}`;
+  //Compose a message to send via WhatsApp
+  const message = `New commit in ${repoName}/${branchName}: ${commitMsg}`;
   
-  // Use Nexmo/Vonage  to send the message via WhatsApp
+  //Use Nexmo/Vonage  to send the message via WhatsApp
   vonage.messages.send(
     new Text(
-      "Hello",
+      message,
       process.env.TO_NUMBER,
       process.env.WHATSAPP_NUMBER
     )
