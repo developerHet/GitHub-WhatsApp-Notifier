@@ -3,8 +3,6 @@ const bodyParser = require('body-parser');
 require("dotenv").config();
 const { Vonage } = require('@vonage/server-sdk')
 const { Text } = require('@vonage/messages/dist/classes/WhatsApp/Text');
-const jwt = require("jsonwebtoken");
-const sha256 = require('js-sha256');
 
 
 const app = express();
@@ -25,7 +23,7 @@ const vonage = new Vonage({
   applicationId: process.env.VONAGE_APPLICATION_ID,
     privateKey: __dirname +"/private.key"
 }
-);
+)
 
 
 
@@ -53,29 +51,12 @@ app.get('/webhook', (req, res) => {
   res.status(200).send('OK');
 });
 
-app
-    .route('/webhooks/inbound-message')    
-    .post(handleInboundMessage);
 
-function handleInboundMessage(request, response){
-  const payload = Object.assign(request.query, request.body)
-  let token = request.headers.authorization.split(" ")[1]
-  try{
-      var decoded = jwt.verify(token, VONAGE_API_SIGNATURE_SECRET, {algorithms:['HS256']});
-      if(sha256(JSON.stringify(payload))!=decoded["payload_hash"]){
-          console.log("tampering detected");
-          response.status(401).send();
-      }
-      else{
-          console.log("Success");
-          response.status(204).send();
-      }
-  }
-  catch(err){
-      console.log('Bad token detected')
-      response.status(401).send()
-  }
-}
+
+app.post('/webhooks/inbound-message', (req, res) => {
+  console.log(req.body);
+  res.status(200).end();
+});
 
 app.post('/webhooks/message-status', (req, res) => {
   console.log(req.body);
