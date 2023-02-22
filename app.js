@@ -18,7 +18,7 @@ const vonage = new Vonage({
   apiKey: process.env.VONAGE_API_KEY,
   apiSecret: process.env.VONAGE_API_SECRET,
   applicationId: process.env.VONAGE_APPLICATION_ID,
-    privateKey: __dirname +"/private.key"
+  privateKey: process.env.VONAGE_PRIVATE_KEY 
 }, 
 //{
   //apiHost: process.env.CYCLIC_URL
@@ -45,8 +45,8 @@ app.post('/webhook', (req, res) => {
       process.env.WHATSAPP_NUMBER
     )
   )
-    .then(resp => console.log(resp.message_uuid))
-    .catch(err => console.error(err));
+  .then(resp => console.log(resp.message_uuid))
+  .catch(err => console.error(err));
   
   res.status(200).send('OK');
 });
