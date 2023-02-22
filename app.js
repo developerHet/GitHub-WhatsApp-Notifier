@@ -28,7 +28,7 @@ const vonage = new Vonage({
 
 
 // Set up a webhook endpoint to receive GitHub push notifications
-app.post('/', (req, res) => {
+app.post('/webhook', (req, res) => {
   const payload = req.body;
   const repoName = payload.repository.name;
   const branchName = payload.ref.replace('refs/heads/', '');
